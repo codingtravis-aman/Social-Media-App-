@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yoop - Currently Offline</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <style>
+    :root {
+      --primary: hsl(214, 89%, 52%);
+      --primary-darker: hsl(214, 89%, 42%);
+      --text: #1c1c1c;
+      --text-light: #666666;
+      --background: #f7f7f7;
+      --card: #ffffff;
+      --border: #e4e4e4;
+      --focus-ring: hsla(214, 89%, 52%, 0.35);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      line-height: 1.5;
+    }
+    .offline-container {
+      max-width: 480px;
+      width: 100%;
+      background-color: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      text-align: center;
+    }
+    .logo {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), #0095ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    p {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    .icon {
+      margin-bottom: 1.5rem;
+      width: 64px;
+      height: 64px;
+      background-color: #eef4fd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .wifi-icon {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+    .retry-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .retry-button:hover {
+      background-color: var(--primary-darker);
+    }
+    .cached-content {
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+    .cached-content h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .cached-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .cached-link {
+      text-decoration: none;
+      background-color: var(--background);
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      color: var(--primary);
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .cached-link:hover {
+      background-color: #eef4fd;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #ffffff;
+        --text-light: #a1a1a1;
+        --background: #111111;
+        --card: #1c1c1c;
+        --border: #2a2a2a;
+      }
+      .icon {
+        background-color: rgba(66, 133, 244, 0.15);
+      }
+      .cached-link {
+        background-color: #252525;
+      }
+      .cached-link:hover {
+        background-color: #333333;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="logo">Yoop</div>
+    <div class="icon">
+      <svg class="wifi-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12" y2="20"></line>
+      </svg>
+    </div>
+    <h1>You're offline</h1>
+    <p>It looks like you've lost your internet connection. Some features may be unavailable until you're back online.</p>
+    <button class="retry-button" onclick="window.location.reload()">Try Again</button>
+    
+    <div class="cached-content">
+      <h2>Available offline:</h2>
+      <div class="cached-links">
+        <a href="/" class="cached-link">Home Feed</a>
+        <a href="/saved" class="cached-link">Saved Posts</a>
+        <a href="/profile" class="cached-link">Your Profile</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if we're back online
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+
+    // Try to load cached content
+    document.addEventListener('DOMContentLoaded', () => {
+      const cachedLinksContainer = document.querySelector('.cached-links');
+      
+      // If we have the Cache API available, try to populate with actually cached routes
+      if ('caches' in window) {
+        caches.open('yoop-v2').then(cache => {
+          cache.keys().then(requests => {
+            const cachedPages = requests
+              .filter(request => {
+                const url = new URL(request.url);
+                // Only include HTML pages
+                return request.headers.get('accept')?.includes('text/html') 
+                  && !url.pathname.includes('/api/') 
+                  && url.pathname !== '/offline.html';
+              })
+              .map(request => {
+                const url = new URL(request.url);
+                return url.pathname;
+              });
+
+            // If we have specific cached pages, replace the default ones
+            if (cachedPages.length > 0) {
+              cachedLinksContainer.innerHTML = '';
+              
+              // Display unique cached pages (remove duplicates)
+              [...new Set(cachedPages)].forEach(path => {
+                // Make path readable
+                let pageName = path === '/' ? 'Home Feed' : 
+                  path.replace(/^\//, '').replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
+                
+                const link = document.createElement('a');
+                link.href = path;
+                link.className = 'cached-link';
+                link.textContent = pageName;
+                cachedLinksContainer.appendChild(link);
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
